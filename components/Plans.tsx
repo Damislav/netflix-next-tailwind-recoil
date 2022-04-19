@@ -4,7 +4,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useState } from 'react'
 import useAuth from '../hooks/useAuth'
-import { loadCheckout } from '../lib/stripe'
 import Table from './Table'
 import Loader from './Loader'
 
@@ -16,15 +15,6 @@ function Plans({ products }: Props) {
   const { logout, user } = useAuth()
   const [selectedPlan, setSelectedPlan] = useState<Product | null>(products[2])
   const [isBillingLoading, setBillingLoading] = useState(false)
-
-  console.log(products)
-
-  const subscribeToPlan = () => {
-    if (!user) return
-
-    loadCheckout(selectedPlan?.prices[0].id!)
-    setBillingLoading(true)
-  }
 
   return (
     <div>
@@ -84,14 +74,13 @@ function Plans({ products }: Props) {
             ))}
           </div>
 
-          <Table products={products} selectedPlan={selectedPlan} />
+          <Table />
 
           <button
             disabled={!selectedPlan || isBillingLoading}
             className={`mx-auto w-11/12 rounded bg-[#E50914] py-4 text-xl shadow hover:bg-[#f6121d] md:w-[420px] ${
               isBillingLoading && 'opacity-60'
             }`}
-            onClick={subscribeToPlan}
           >
             {isBillingLoading ? (
               <Loader color="dark:fill-gray-300" />
